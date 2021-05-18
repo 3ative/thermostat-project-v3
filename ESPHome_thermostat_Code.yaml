@@ -1,0 +1,235 @@
+esphome:
+  name: esphome_name
+  platform: ESP8266
+  board: d1_mini
+  on_boot:
+    then:
+      - lambda: "id(oled_brightness).publish_state(0.4);"
+#  **** Un-Comment these two lines at the end of setup ****
+      # - switch.turn_off: dallas_power
+      # - delay: 20s
+      - switch.turn_on: dallas_power
+
+substitutions:
+  room: Kitchen # **** Change Room Name Here ****
+#  **** Change next two lines to your Home Assistant Entities ****  
+  entity_heater: input_boolean.tut_thermo_fire
+  entity_cooler: input_boolean.tut_thermo_cool
+  default_low: "20.0"
+  default_hi: "28.0"
+
+wifi:
+  ssid: !secret ssid
+  password: !secret wifi_password
+  
+logger:
+  logs:
+    climate: none
+    sensor: none
+#  **** Un-Comment this line at the end of setup ****    
+    # dallas.sensor: none
+
+api:
+ota:
+
+i2c:
+
+switch:
+  - platform: gpio
+    id: dallas_power
+    pin:
+      number: GPIO03
+
+  - platform: template
+    id: heat_cool
+    
+    optimistic: true      
+  - platform: gpio
+    id: relay_heater
+    pin: D0
+    inverted: true
+  - platform: gpio
+    id: relay_cooler
+    pin: D5
+    inverted: true
+  - platform: template
+    id: brightness
+    optimistic: true
+
+binary_sensor:
+  - platform: template
+    id: fire
+  - platform: template
+    id: cool
+
+  - platform: gpio
+    id: button
+    pin: 
+      number: D4
+      inverted: true
+    on_press:
+        then:
+          - switch.toggle: heat_cool
+    on_click:
+      - min_length: 1000ms
+        max_length: 20000ms
+        then:
+          - switch.toggle: brightness
+
+dallas:
+  pin: D3
+  update_interval: 3s
+
+climate:
+  - platform: thermostat
+    visual:
+      min_temperature: 15 °C
+      max_temperature: 30 °C
+    name: "${room} Thermostat"
+    id: this_thermostat
+    sensor: internal_temperature
+
+    default_target_temperature_low: ${default_low}
+    default_target_temperature_high: ${default_hi}
+    hysteresis: 0.2 °C
+
+    cool_action:
+      - switch.turn_on: relay_cooler
+      - lambda: id(cool).publish_state(true);
+      - homeassistant.service:
+          service: homeassistant.turn_on
+          data:
+            entity_id: ${entity_cooler}
+
+    heat_action:
+      - switch.turn_on: relay_heater
+      - lambda: id(fire).publish_state(true);
+      - homeassistant.service:
+          service: homeassistant.turn_on
+          data:
+            entity_id: ${entity_heater}
+
+    idle_action:
+      - switch.turn_off: relay_cooler
+      - switch.turn_off: relay_heater
+      - lambda: id(cool).publish_state(false);
+      - lambda: id(fire).publish_state(false);
+      - homeassistant.service:
+          service: homeassistant.turn_off
+          data:
+            entity_id: ${entity_cooler}
+      - homeassistant.service:
+          service: homeassistant.turn_off
+          data:
+            entity_id: ${entity_heater}
+
+sensor:
+  - platform: template
+    id: oled_brightness
+
+  - platform: dallas
+    id: internal_temperature
+#  **** Copy and Paste your Dallas Sensor Address below ****    
+    address: 0x9FECE0CD1D64FF28
+
+  - platform: rotary_encoder
+    id: encoder
+    pin_a:
+      number: D6
+      mode: INPUT_PULLUP
+    pin_b:
+      number: D7
+      mode: INPUT_PULLUP
+    on_clockwise:
+      - if:
+          condition:
+            switch.is_on: brightness
+          then:
+            - sensor.template.publish:
+                id: oled_brightness
+                state: !lambda "return id(oled_brightness).state + 0.01;"
+            - lambda: |-
+                id(oled1).set_brightness( id(oled_brightness).state );
+          else:
+            - if:
+                condition:
+                  switch.is_on: heat_cool
+                then:
+                  - climate.control:
+                      id: this_thermostat
+                      target_temperature_high: !lambda "return id(this_thermostat).target_temperature_high + 0.5;"
+                else:
+                  - climate.control:
+                      id: this_thermostat
+                      target_temperature_low: !lambda "return id(this_thermostat).target_temperature_low + 0.5;"
+
+    on_anticlockwise:
+      then:
+        - if:
+            condition:
+              switch.is_on: brightness
+            then:
+              - sensor.template.publish:
+                  id: oled_brightness
+                  state: !lambda "return id(oled_brightness).state - 0.01;"
+              - lambda: |-
+                  id(oled1).set_brightness( id(oled_brightness).state);
+            else:
+              - if:
+                  condition:
+                    switch.is_on: heat_cool
+                  then:
+                    - climate.control:
+                        id: this_thermostat
+                        target_temperature_high: !lambda "return id(this_thermostat).target_temperature_high - 0.5;"
+                  else:
+                    - climate.control:
+                        id: this_thermostat
+                        target_temperature_low: !lambda "return id(this_thermostat).target_temperature_low - 0.5;"
+
+display:
+  - platform: ssd1306_i2c
+    id: oled1
+    update_interval: 0.5s
+    brightness: 0.4
+    model: "SH1106 128x64"
+    rotation: 180
+    address: 0x3C
+    lambda: |-
+      if (id(fire).state) {id(ani_fire).next_frame(); it.image(0, 0, id(ani_fire));}
+      else if (id(cool).state) {id(ani_fan).next_frame(); it.image(0, 0, id(ani_fan));}
+      else {it.image(0, 0, id(home_thermometer));}
+      it.print(64, 0,  id(font1), TextAlign::TOP_CENTER, "${room}");
+      it.printf(64, 4, id(font2), TextAlign::TOP_CENTER, " %.1f°", id(internal_temperature).state);
+      it.printf(0, 64, id(font3), TextAlign::BASELINE_LEFT, "L:%.1f°", id(this_thermostat).target_temperature_low);
+      it.printf(128, 64, id(font3), TextAlign::BASELINE_RIGHT, "H:%.1f°", id(this_thermostat).target_temperature_high);
+
+      if (id(brightness).state) {it.image(56, 51, id(bulb));} 
+      else if (id(heat_cool).state) {it.image(56, 51, id(arrow_right));}
+      else {it.image(56, 51, id(arrow_left));}
+
+animation:
+  - file: "_icons/thermostat/fan.gif"
+    id: ani_fan
+  - file: "_icons/thermostat/fire.gif"
+    id: ani_fire
+image:
+  - file: "_icons/thermostat/home-thermometer.png"
+    id: home_thermometer
+  - file: "_icons/thermostat/arrow-left-circle-outline.png"
+    id: arrow_left
+  - file: "_icons/thermostat/arrow-right-circle-outline.png"
+    id: arrow_right
+  - file: "_icons/thermostat/lightbulb-on-outline.png"
+    id: bulb
+font:
+  - file: "_fonts/nasalization.ttf"
+    id: font1
+    size: 12
+  - file: "_fonts/refsan.ttf"
+    id: font2
+    size: 42
+  - file: "_fonts/refsan.ttf"
+    id: font3
+    size: 13
+
