@@ -9,4 +9,10 @@ Use the "**Code**" button above "**Download ZIP**" to get everything you need.
 * 3D Printer files provided are as seen in the tutorial and can be used as a base model for your own 'Front Plate' mounting solutions.
 
 # Watch the full tutorial here: https://youtu.be/RorDXsYIrnQ
-[![BMC](https://www.buymeacoffee.com/assets/img/custom_images/white_img.png)](https://www.buymeacoffee.com/3ative)
+
+🎁 Found this useful or want to say 'thanks' and support my efforts...
+
+[![BMC](https://www.buymeacoffee.com/assets/img/custom_images/white_img.png)](https://www.buymeacoffee.com/3ative) **And leave a me a message to let me know.**  ❤
+
+🍺 CHEERS! 👍
+
