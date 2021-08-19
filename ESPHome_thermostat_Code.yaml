@@ -82,6 +82,12 @@ dallas:
 
 climate:
   - platform: thermostat
+    ## Add these 4 lines to fix 2021.8.0 "Breaking Change" ##
+    min_cooling_off_time: 0s
+    min_cooling_run_time: 0s
+    min_heating_off_time: 0s
+    min_heating_run_time: 0s
+    
     visual:
       min_temperature: 15 °C
       max_temperature: 30 °C
