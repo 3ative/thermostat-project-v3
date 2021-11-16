@@ -1,33 +1,30 @@
 esphome:
-  name: esphome_name
+  name: thermostat_kitchen
   platform: ESP8266
   board: d1_mini
   on_boot:
     then:
-      - lambda: "id(oled_brightness).publish_state(0.4);"
-#  **** Un-Comment these two lines at the end of setup ****
-      # - switch.turn_off: dallas_power
-      # - delay: 20s
+      - lambda: "id(oled_contrast).publish_state(0.4);"
+      - switch.turn_off: dallas_power
+      - delay: 25s
       - switch.turn_on: dallas_power
 
 substitutions:
-  room: Kitchen # **** Change Room Name Here ****
-#  **** Change next two lines to your Home Assistant Entities ****  
-  entity_heater: input_boolean.tut_thermo_fire
-  entity_cooler: input_boolean.tut_thermo_cool
+  room: Kitchen # Room Name
+  entity_heater: input_boolean.tut_thermo_fire_lr
+  entity_cooler: input_boolean.tut_thermo_cool_lr
   default_low: "20.0"
   default_hi: "28.0"
 
 wifi:
   ssid: !secret ssid
   password: !secret wifi_password
-  
+
 logger:
   logs:
     climate: none
     sensor: none
-#  **** Un-Comment this line at the end of setup ****    
-    # dallas.sensor: none
+    dallas.sensor: none
 
 api:
 ota:
@@ -42,8 +39,8 @@ switch:
 
   - platform: template
     id: heat_cool
-    
-    optimistic: true      
+
+    optimistic: true
   - platform: gpio
     id: relay_heater
     pin: D0
@@ -64,12 +61,12 @@ binary_sensor:
 
   - platform: gpio
     id: button
-    pin: 
+    pin:
       number: D4
       inverted: true
     on_press:
-        then:
-          - switch.toggle: heat_cool
+      then:
+        - switch.toggle: heat_cool
     on_click:
       - min_length: 1000ms
         max_length: 20000ms
@@ -82,12 +79,13 @@ dallas:
 
 climate:
   - platform: thermostat
-    ## Add these 4 lines to fix 2021.8.0 "Breaking Change" ##
     min_cooling_off_time: 0s
     min_cooling_run_time: 0s
+    # min_fanning_off_time: 0s
+    # min_fanning_run_time: 0s
     min_heating_off_time: 0s
     min_heating_run_time: 0s
-    
+    min_idle_time: 0s
     visual:
       min_temperature: 15 °C
       max_temperature: 30 °C
@@ -97,7 +95,6 @@ climate:
 
     default_target_temperature_low: ${default_low}
     default_target_temperature_high: ${default_hi}
-    hysteresis: 0.2 °C
 
     cool_action:
       - switch.turn_on: relay_cooler
@@ -131,12 +128,11 @@ climate:
 
 sensor:
   - platform: template
-    id: oled_brightness
+    id: oled_contrast
 
   - platform: dallas
     id: internal_temperature
-#  **** Copy and Paste your Dallas Sensor Address below ****    
-    address: 0x9FECE0CD1D64FF28
+    address: 0xDF26FFCD1D64FF28
 
   - platform: rotary_encoder
     id: encoder
@@ -152,10 +148,10 @@ sensor:
             switch.is_on: brightness
           then:
             - sensor.template.publish:
-                id: oled_brightness
-                state: !lambda "return id(oled_brightness).state + 0.01;"
+                id: oled_contrast
+                state: !lambda "return id(oled_contrast).state + 0.01;"
             - lambda: |-
-                id(oled1).set_brightness( id(oled_brightness).state );
+                id(oled1).set_contrast( id(oled_contrast).state );
           else:
             - if:
                 condition:
@@ -176,10 +172,10 @@ sensor:
               switch.is_on: brightness
             then:
               - sensor.template.publish:
-                  id: oled_brightness
-                  state: !lambda "return id(oled_brightness).state - 0.01;"
+                  id: oled_contrast
+                  state: !lambda "return id(oled_contrast).state - 0.01;"
               - lambda: |-
-                  id(oled1).set_brightness( id(oled_brightness).state);
+                  id(oled1).set_contrast( id(oled_contrast).state);
             else:
               - if:
                   condition:
@@ -197,7 +193,7 @@ display:
   - platform: ssd1306_i2c
     id: oled1
     update_interval: 0.5s
-    brightness: 0.4
+    contrast: 1
     model: "SH1106 128x64"
     rotation: 180
     address: 0x3C
@@ -238,4 +234,3 @@ font:
   - file: "_fonts/refsan.ttf"
     id: font3
     size: 13
-
