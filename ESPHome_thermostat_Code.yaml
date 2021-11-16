@@ -193,7 +193,7 @@ display:
   - platform: ssd1306_i2c
     id: oled1
     update_interval: 0.5s
-    contrast: 1
+    contrast: 0.4
     model: "SH1106 128x64"
     rotation: 180
     address: 0x3C
