@@ -9,7 +9,7 @@ Use the "**Code**" button above "**Download ZIP**" to get everything you need.
 * 3D Printer files provided are as seen in the tutorial and can be used as a base model for your own 'Front Plate' mounting solutions.
 
 ## Please Be Aware:
-* Depending on the supply, SOME OLED displays have the VCC & GND (0v) pins reversed - Be sure to check and adjust your build accordingly.
+* Depending on the supplier, SOME OLED displays have the VCC & GND (0v) pins reversed - Be sure to check and adjust your build accordingly.
 
 # Watch the full tutorial here: https://youtu.be/RorDXsYIrnQ
 
