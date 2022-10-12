@@ -127,12 +127,12 @@ climate:
             entity_id: $entity_heater
 
 sensor:
+  - platform: template
+    id: oled_contrast
+
   - platform: dallas
     id: internal_temperature
     address: 0xf53c01f0959bd428
-
-  - platform: template
-    id: oled_contrast
 
   - platform: rotary_encoder
     id: encoder
