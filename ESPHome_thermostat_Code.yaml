@@ -1,5 +1,5 @@
 esphome:
-  name: thermostat-lounge
+  name: "thermostat-kitchen"
   platform: ESP8266
   board: d1_mini
 
@@ -11,9 +11,9 @@ esphome:
       - lambda: 'id(oled_contrast).publish_state(0.4);'
 
 substitutions:
-  room: Lounge # Room Name
-  heater: input_boolean.tut_thermo_fire
-  cooler: input_boolean.tut_thermo_cool
+  room: Kitchen # Room Name
+  entity_heater: input_boolean.tut_thermo_fire
+  entity_cooler: input_boolean.tut_thermo_cool
   default_low: '20'
   default_hi: '28'
 wifi:
@@ -23,7 +23,7 @@ wifi:
 
 logger:
   logs:
-    # climate: none
+    climate: none
     sensor: none
     dallas.sensor: none
 
@@ -102,7 +102,7 @@ climate:
       - homeassistant.service:
           service: homeassistant.turn_on
           data:
-            entity_id: $cooler
+            entity_id: $entity_cooler
 
     heat_action:
       - switch.turn_on: relay_heater
@@ -110,7 +110,7 @@ climate:
       - homeassistant.service:
           service: homeassistant.turn_on
           data:
-            entity_id: $heater
+            entity_id: $entity_heater
 
     idle_action:
       - switch.turn_off: relay_cooler
@@ -120,11 +120,11 @@ climate:
       - homeassistant.service:
           service: homeassistant.turn_off
           data:
-            entity_id: $cooler
+            entity_id: $entity_cooler
       - homeassistant.service:
           service: homeassistant.turn_off
           data:
-            entity_id: $heater
+            entity_id: $entity_heater
 
 sensor:
   - platform: dallas
@@ -133,10 +133,6 @@ sensor:
 
   - platform: template
     id: oled_contrast
-
-  - platform: homeassistant
-    id: internal_humidity
-    entity_id: sensor.ironman_humidity
 
   - platform: rotary_encoder
     id: encoder
@@ -207,7 +203,6 @@ display:
       else {it.image(0, 0, id(home_thermometer));}
 
       it.print(64, 0,  id(font1), TextAlign::TOP_CENTER, "${room}");
-      it.printf(128, 0,  id(font4), TextAlign::TOP_RIGHT, " %.1f%% ", id(internal_humidity).state);
 
       it.printf(64, 4, id(font2), TextAlign::TOP_CENTER, " %.1f°", id(internal_temperature).state);
       it.printf(0, 64, id(font3), TextAlign::BASELINE_LEFT, "L:%.1f°", id(this_thermostat).target_temperature_low);
