@@ -213,9 +213,9 @@ display:
       else {it.image(56, 51, id(arrow_left));}
 
 animation:
-  - file: "_icons/thermostat/fan.png"
+  - file: "_icons/thermostat/fan.gif"
     id: ani_fan
-  - file: "_icons/thermostat/fire.png"
+  - file: "_icons/thermostat/fire.gif"
     id: ani_fire
 image:
   - file: "_icons/thermostat/home-thermometer.png"
