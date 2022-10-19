@@ -7,7 +7,6 @@ esphome:
     priority: -100.0
     then:
       - switch.turn_on: dallas_power
-      # - lambda: "id(this_thermostat).mode = climate::CLIMATE_MODE_AUTO;"
       - lambda: "id(oled_contrast).publish_state(0.4);"
 
 substitutions:
