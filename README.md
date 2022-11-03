@@ -20,9 +20,9 @@ Use the "**Code**" button above "**Download ZIP**" to get everything you need.
 ![IMG_20211218_123206](https://user-images.githubusercontent.com/51385971/154135311-8bd92801-78bd-403f-a6ac-fb7d63f011c3.jpg)
 
 
-🎁 Found this useful or want to say 'thanks' and support my efforts...
-
-[![BMC](https://www.buymeacoffee.com/assets/img/custom_images/white_img.png)](https://www.buymeacoffee.com/3ative) **And leave a me a message to let me know.**  ❤
-
-🍺 CHEERS! 👍
+___
+#### 💖 Found this useful, want to say '*Thanks*' and support my efforts. *CHEERS*🍺
+| Buy me a Coffee | PATREON |
+|-----------------|---------|
+| https://www.buymeacoffee.com/3ative | https://www.patreon.com/3ative |
 
