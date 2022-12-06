@@ -24,7 +24,7 @@ logger:
   logs:
     climate: none
     sensor: none
-    dallas.sensor: none
+    # dallas.sensor: none
 
 api:
 ota:
