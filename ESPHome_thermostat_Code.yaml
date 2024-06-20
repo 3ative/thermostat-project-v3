@@ -28,6 +28,7 @@ logger:
 
 api:
 ota:
+  platform: esphome
 
 i2c:
   frequency: 400kHz
@@ -74,10 +75,6 @@ binary_sensor:
         max_length: 20000ms
         then:
           - switch.toggle: brightness
-
-dallas:
-  - pin: D3
-    update_interval: 2s
 
 climate:
   - platform: thermostat
@@ -134,12 +131,17 @@ climate:
           data:
             entity_id: $entity_heater
 
+one_wire:
+  - platform: gpio
+    pin: D3
+
 sensor:
   - platform: template
     id: oled_contrast
 
-  - platform: dallas
+  - platform: dallas_temp
     id: internal_temperature
+    update_interval: 2s
     address: 0xf53c01f0959bd428
 
   - platform: homeassistant
