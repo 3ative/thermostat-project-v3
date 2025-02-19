@@ -8,6 +8,10 @@ Use the "**Code**" button above "**Download ZIP**" to get everything you need.
 
 * 3D Printer files provided are as seen in the tutorial and can be used as a base model for your own 'Front Plate' mounting solutions.
 
+## Breaking Change ALERT!!!: (See Comments in the code)
+* "Platform": Both the ``esphome:`` and "board" have changed - Now Fixed.
+* Changes to how Images are displayed has also beed changed  - Now Fixed.
+
 ## Please Be Aware:
 * Depending on the supplier, SOME OLED displays have the VCC & GND (0v) pins reversed - Be sure to check and adjust your build accordingly.
 
