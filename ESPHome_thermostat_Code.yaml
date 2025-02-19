@@ -1,20 +1,21 @@
-esphome:
-  name: "thermostat-kitchen"
-  platform: ESP8266
-  board: d1_mini
-
-  on_boot:
-    priority: -100.0
-    then:
-      - switch.turn_on: dallas_power
-      - lambda: "id(oled_contrast).publish_state(0.4);"
-
 substitutions:
   room: Kitchen # Room Name
   entity_heater: input_boolean.tut_thermo_fire    ### Change for your 'Heating' Entity
   entity_cooler: input_boolean.tut_thermo_cool    ### Change for your 'Cooling' Entity
   default_low: "20"
   default_hi: "28"
+
+esphome:
+  name: "thermostat-kitchen"
+  on_boot:
+    priority: -100.0
+    then:
+      - switch.turn_on: dallas_power
+      - lambda: "id(oled_contrast).publish_state(0.4);"
+
+esp8266:
+  board: d1_mini
+
 wifi:
   networks:
     - ssid: !secret wifi_ssid
@@ -228,19 +229,26 @@ display:
       else {it.image(56, 51, id(arrow_left));}
 
 animation:
+##### Breaking Change: Added type: binary to each entry #####
   - file: "_icons/thermostat/fan.gif"
+    type: binary
     id: ani_fan
   - file: "_icons/thermostat/fire.gif"
+    type: binary
     id: ani_fire
+    
+##### Breaking Change: Added type: binary as a "Group" #####
 image:
-  - file: "_icons/thermostat/home-thermometer.png"
-    id: home_thermometer
-  - file: "_icons/thermostat/arrow-left-circle-outline.png"
-    id: arrow_left
-  - file: "_icons/thermostat/arrow-right-circle-outline.png"
-    id: arrow_right
-  - file: "_icons/thermostat/lightbulb-on-outline.png"
-    id: bulb
+  binary:
+    - file: "_icons/thermostat/home-thermometer.png"
+      id: home_thermometer
+    - file: "_icons/thermostat/arrow-left-circle-outline.png"
+      id: arrow_left
+    - file: "_icons/thermostat/arrow-right-circle-outline.png"
+      id: arrow_right
+    - file: "_icons/thermostat/lightbulb-on-outline.png"
+      id: bulb
+
 font:
   - file: "_fonts/nasalization.ttf"
     id: font1
