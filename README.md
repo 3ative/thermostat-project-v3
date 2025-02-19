@@ -11,6 +11,7 @@ Use the "**Code**" button above "**Download ZIP**" to get everything you need.
 ## Breaking Change ALERT!!!: (See Comments in the code)
 * "Platform": Both the ``esphome:`` and "board" have changed - Now Fixed.
 * Changes to how Images are displayed has also beed changed  - Now Fixed.
+* Icons and GIFs needed colours inverted  - Now Fixed.
 
 ## Please Be Aware:
 * Depending on the supplier, SOME OLED displays have the VCC & GND (0v) pins reversed - Be sure to check and adjust your build accordingly.
