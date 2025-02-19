@@ -5,6 +5,7 @@ substitutions:
   default_low: "20"
   default_hi: "28"
 
+######### Note the Changes in these Sections ##########
 esphome:
   name: "thermostat-kitchen"
   on_boot:
@@ -15,6 +16,7 @@ esphome:
 
 esp8266:
   board: d1_mini
+########################################################
 
 wifi:
   networks:
