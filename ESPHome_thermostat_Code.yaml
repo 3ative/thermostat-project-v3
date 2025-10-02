@@ -101,7 +101,14 @@ climate:
       - name: Home
         default_target_temperature_low: $default_low
         default_target_temperature_high: $default_hi
-        mode: AUTO
+        mode: HEAT_COOL                       ### Changed from "auto" to "HEAT_COOL"
+###########################################
+
+##### Added to fix for Heat Cool Mode #####
+    heat_cool_mode:
+      then:
+        - lambda: |-
+            // Do nothing
 ###########################################
 
     cool_action:
@@ -264,3 +271,4 @@ font:
   - file: "_fonts/refsan.ttf"
     id: font4
     size: 10
+
