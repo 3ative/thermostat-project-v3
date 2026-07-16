@@ -96,7 +96,7 @@ climate:
 ### Updated for ESPHome v2022.10.0 Onwards
     default_preset: Home                      ### NEW! Use this to set Preset
     # on_boot_restore_from: memory            ### Use this to "Restore From Memeory" (A Saved State) OR...
-    on_boot_restore_from: default_preset      ### Use this to set Preset to start on every Boot    
+    on_boot_restore_from: default_preset      ### Use this to set Preset to start on every Boot
     preset:
       - name: Home
         default_target_temperature_low: $default_low
@@ -233,30 +233,36 @@ display:
       it.printf(0, 64, id(font3), TextAlign::BASELINE_LEFT, "L:%.1f°", id(this_thermostat).target_temperature_low);
       it.printf(128, 64, id(font3), TextAlign::BASELINE_RIGHT, "H:%.1f°", id(this_thermostat).target_temperature_high);
 
-      if (id(brightness).state) {it.image(56, 51, id(bulb));} 
+      if (id(brightness).state) {it.image(56, 51, id(bulb));}
       else if (id(heat_cool).state) {it.image(56, 51, id(arrow_right));}
       else {it.image(56, 51, id(arrow_left));}
 
-animation:
-##### Breaking Change: Added type: binary to each entry #####
-  - file: "_icons/thermostat/fan.gif"
+##### Breaking Change (ESPHome 2026.7.0): legacy top-level animation:/image: binary: keys removed in favor of platform: entries under image: #####
+image:
+  - platform: animation
+    file: "_icons/thermostat/fan.gif"
     type: binary
     id: ani_fan
-  - file: "_icons/thermostat/fire.gif"
+  - platform: animation
+    file: "_icons/thermostat/fire.gif"
     type: binary
     id: ani_fire
-    
-##### Breaking Change: Added type: binary as a "Group" #####
-image:
-  binary:
-    - file: "_icons/thermostat/home-thermometer.png"
-      id: home_thermometer
-    - file: "_icons/thermostat/arrow-left-circle-outline.png"
-      id: arrow_left
-    - file: "_icons/thermostat/arrow-right-circle-outline.png"
-      id: arrow_right
-    - file: "_icons/thermostat/lightbulb-on-outline.png"
-      id: bulb
+  - platform: file
+    file: "_icons/thermostat/home-thermometer.png"
+    type: binary
+    id: home_thermometer
+  - platform: file
+    file: "_icons/thermostat/arrow-left-circle-outline.png"
+    type: binary
+    id: arrow_left
+  - platform: file
+    file: "_icons/thermostat/arrow-right-circle-outline.png"
+    type: binary
+    id: arrow_right
+  - platform: file
+    file: "_icons/thermostat/lightbulb-on-outline.png"
+    type: binary
+    id: bulb
 
 font:
   - file: "_fonts/nasalization.ttf"
@@ -271,4 +277,3 @@ font:
   - file: "_fonts/refsan.ttf"
     id: font4
     size: 10
-
